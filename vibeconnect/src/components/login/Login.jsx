@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image } from "react-native";
+
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  Alert,
+} from "react-native";
 
 import {
   useFonts,
@@ -11,8 +19,23 @@ import {
 
 import styles from "./LoginStyles";
 
-function Login() {
-  const [mostrarSenha, setMostrarSenha] = useState(false);
+import {
+  loginUsuario,
+} from "../../api/api";
+
+export default function Login({ navigation }) {
+
+  const [mostrarSenha, setMostrarSenha] =
+    useState(false);
+
+  const [emailOuUsuario, setEmailOuUsuario] =
+    useState("");
+
+  const [senha, setSenha] =
+    useState("");
+
+  const [carregando, setCarregando] =
+    useState(false);
 
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
@@ -21,25 +44,67 @@ function Login() {
     Poppins_700Bold,
   });
 
-  if (!fontsLoaded) return null;
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  const handleLogin = async () => {
+
+    if (
+      !emailOuUsuario.trim() ||
+      !senha
+    ) {
+      Alert.alert(
+        "Atenção",
+        "Digite seu e-mail/usuário e sua senha."
+      );
+      return;
+    }
+
+    try {
+
+      setCarregando(true);
+
+      await loginUsuario(
+        emailOuUsuario,
+        senha
+      );
+
+      navigation.replace("Home");
+
+    } catch (error) {
+
+      Alert.alert(
+        "Não foi possível entrar",
+        error.message
+      );
+
+    } finally {
+      setCarregando(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
 
-      {/* LOGO */}
       <Image
         source={require("../../../assets/logo.png")}
         style={styles.logo}
         resizeMode="contain"
       />
 
-      {/* NOME */}
       <Text style={styles.logoText}>
-        <Text style={styles.vibe}>Vibe</Text>
-        <Text style={styles.connect}>Connect</Text>
+
+        <Text style={styles.vibe}>
+          Vibe
+        </Text>
+
+        <Text style={styles.connect}>
+          Connect
+        </Text>
+
       </Text>
 
-      {/* SUBTÍTULO */}
       <Text style={styles.subtitle}>
         Conecte pessoas, compartilhe{"\n"}
         boas vibrações
@@ -47,8 +112,8 @@ function Login() {
 
       <View style={styles.space} />
 
-      {/* CAMPO E-MAIL */}
       <View style={styles.inputContainer}>
+
         <Image
           source={require("../../../assets/email.png")}
           style={styles.icon}
@@ -61,11 +126,14 @@ function Login() {
           placeholderTextColor="#999999"
           keyboardType="email-address"
           autoCapitalize="none"
+          value={emailOuUsuario}
+          onChangeText={setEmailOuUsuario}
         />
+
       </View>
 
-      {/* CAMPO SENHA */}
       <View style={styles.inputContainer}>
+
         <Image
           source={require("../../../assets/senha.vector.png")}
           style={styles.icon}
@@ -77,65 +145,76 @@ function Login() {
           placeholder="Senha"
           placeholderTextColor="#999999"
           secureTextEntry={!mostrarSenha}
+          value={senha}
+          onChangeText={setSenha}
         />
 
-        {/* OLHO */}
         <TouchableOpacity
           style={styles.eyeButton}
-          onPress={() => setMostrarSenha(!mostrarSenha)}
+          onPress={() =>
+            setMostrarSenha(!mostrarSenha)
+          }
         >
+
           <Image
             source={require("../../../assets/eyes.vector.png")}
             style={styles.eyeIcon}
             resizeMode="contain"
           />
+
         </TouchableOpacity>
+
       </View>
 
-      {/* BOTÃO ENTRAR */}
-      <TouchableOpacity style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Entrar</Text>
+      <TouchableOpacity
+        style={styles.loginButton}
+        onPress={handleLogin}
+        disabled={carregando}
+      >
+
+        <Text style={styles.loginButtonText}>
+          {carregando
+            ? "Entrando..."
+            : "Entrar"}
+        </Text>
+
       </TouchableOpacity>
 
-      {/* ESQUECEU A SENHA */}
-      <TouchableOpacity style={styles.forgotButton}>
+      <TouchableOpacity
+        style={styles.forgotButton}
+      >
+
         <Text style={styles.forgotText}>
           Esqueceu sua senha?
         </Text>
+
       </TouchableOpacity>
 
-      {/* OU */}
       <View style={styles.dividerContainer}>
-        <View style={styles.line} />
-
-        <Text style={styles.orText}>ou</Text>
 
         <View style={styles.line} />
+
+        <Text style={styles.orText}>
+          ou
+        </Text>
+
+        <View style={styles.line} />
+
       </View>
 
-      {/* CRIAR CONTA */}
-      <TouchableOpacity style={styles.createButton}>
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() =>
+          navigation.navigate("CriarConta")
+        }
+      >
+
         <Text style={styles.createButtonText}>
           Criar conta
         </Text>
+
       </TouchableOpacity>
-
-      {/* JÁ TEM UMA CONTA */}
-      <View style={styles.registerContainer}>
-        <Text style={styles.registerText}>
-          Já tem uma conta?{" "}
-        </Text>
-
-        <TouchableOpacity>
-          <Text style={styles.registerLink}>
-            Entrar
-          </Text>
-        </TouchableOpacity>
-      </View>
 
     </View>
   );
 }
-
-export { Login };
-export default Login;

@@ -1,34 +1,42 @@
 import { StyleSheet } from "react-native";
 
-const styles = StyleSheet.create({
-
+export default StyleSheet.create({
   footer: {
-    height: 70,
+    height: 82,
     backgroundColor: "#FFFFFF",
+
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+
     borderTopWidth: 1,
     borderTopColor: "#DDDDDD",
-    flexDirection: "row",
-    justifyContent: "space-around",
-    alignItems: "center",
+
+    paddingBottom: 5,
   },
 
-  item: {
+  botao: {
+    flex: 1,
+
     alignItems: "center",
     justifyContent: "center",
   },
 
   icone: {
-    width: 24,
-    height: 24,
-    resizeMode: "contain",
+    width: 34,
+    height: 34,
+
+    marginBottom: 2,
+  },
+
+  iconeAtivo: {
+    opacity: 1,
   },
 
   texto: {
-    fontSize: 8,
-    color: "#3A6B6F",
-    marginTop: 3,
+    fontSize: 17,
+    color: "#39747A",
+    fontFamily: "Poppins_400Regular",
+    textAlign: "center",
   },
-
 });
-
-export default styles;

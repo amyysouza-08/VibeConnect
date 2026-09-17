@@ -1,10 +1,16 @@
-import React from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   View,
   Text,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
 } from "react-native";
 
 import {
@@ -19,13 +25,85 @@ import styles from "./HomeStyles";
 
 import Footer from "../footer/Footer";
 
-function Home() {
+import {
+  getPosts,
+  curtirPost,
+  salvarPost,
+} from "../../api/api";
+
+export default function Home({ navigation }) {
+
   const [fontsLoaded] = useFonts({
     Poppins_400Regular,
     Poppins_500Medium,
     Poppins_600SemiBold,
     Poppins_700Bold,
   });
+
+  const [posts, setPosts] = useState([]);
+  const [carregando, setCarregando] =
+    useState(true);
+
+  useEffect(() => {
+    carregarPosts();
+  }, []);
+
+  const carregarPosts = async () => {
+    try {
+
+      setCarregando(true);
+
+      const dados = await getPosts();
+
+      setPosts(dados);
+
+    } catch (error) {
+
+      Alert.alert(
+        "Erro",
+        error.message
+      );
+
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  const handleCurtir = async (post) => {
+    try {
+
+      const atualizado =
+        await curtirPost(post);
+
+      setPosts((lista) =>
+        lista.map((item) =>
+          item.id === post.id
+            ? atualizado
+            : item
+        )
+      );
+
+    } catch (error) {
+      Alert.alert(
+        "Erro",
+        error.message
+      );
+    }
+  };
+
+  const handleSalvar = async (post) => {
+
+    const atualizado =
+      await salvarPost(post);
+
+    setPosts((lista) =>
+      lista.map((item) =>
+        item.id === post.id
+          ? atualizado
+          : item
+      )
+    );
+  };
 
   if (!fontsLoaded) {
     return null;
@@ -34,174 +112,211 @@ function Home() {
   return (
     <View style={styles.container}>
 
-      <View style={styles.content}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
 
-        {/* LOGO */}
         <Text style={styles.logoText}>
-          <Text style={styles.vibe}>Vibe</Text>
-          <Text style={styles.connect}>Connect</Text>
+
+          <Text style={styles.vibe}>
+            Vibe
+          </Text>
+
+          <Text style={styles.connect}>
+            Connect
+          </Text>
+
         </Text>
 
-        {/* PRIMEIRO POST */}
-        <View style={styles.postCard}>
+        {carregando ? (
 
-          <View style={styles.postHeader}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingTop: 100,
+            }}
+          >
 
-            <View style={styles.userInfo}>
-              <View style={styles.avatar} />
+            <ActivityIndicator />
 
-              <View style={styles.userTexts}>
-                <Text style={styles.userName}>
-                  Eloysa
-                </Text>
+          </View>
 
-                <Text style={styles.postTime}>
-                  Hoje às 10:30
-                </Text>
+        ) : posts.length === 0 ? (
+
+          <View
+            style={{
+              alignItems: "center",
+              paddingTop: 80,
+            }}
+          >
+
+            <Text>
+              Nenhuma publicação ainda.
+            </Text>
+
+          </View>
+
+        ) : (
+
+          posts.map((post) => (
+
+            <View
+              key={post.id}
+              style={styles.postCard}
+            >
+
+              <View style={styles.postHeader}>
+
+                <TouchableOpacity
+                  style={styles.userInfo}
+                  activeOpacity={0.7}
+                >
+
+                  <View style={styles.avatar} />
+
+                  <View style={styles.userTexts}>
+
+                    <Text style={styles.userName}>
+                      {post.usuario?.nome ||
+                        post.username}
+                    </Text>
+
+                    <Text style={styles.postTime}>
+                      {post.horario}
+                    </Text>
+
+                  </View>
+
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.moreButton}
+                  onPress={() =>
+                    Alert.alert(
+                      "Opções",
+                      "Menu da publicação"
+                    )
+                  }
+                >
+
+                  <Image
+                    source={require("../../../assets/pontos.png")}
+                    style={styles.pontosIcon}
+                    resizeMode="contain"
+                  />
+
+                </TouchableOpacity>
+
               </View>
-            </View>
 
-            <TouchableOpacity style={styles.moreButton}>
-              <Image
-                source={require("../../../assets/pontos.png")}
-                style={styles.pontosIcon}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-
-          </View>
-
-          <Text style={styles.postText}>
-            Lorem ipsum dolor sit amet, consectetur{"\n"}
-            adipiscing
-          </Text>
-
-          <View style={styles.postActions}>
-
-            <View style={styles.leftActions}>
-
-              <TouchableOpacity style={styles.actionButton}>
+              {post.imagem ? (
                 <Image
-                  source={require("../../../assets/curtida.png")}
-                  style={styles.actionIcon}
-                  resizeMode="contain"
+                  source={require("../../../assets/igreja.png")}
+                  style={{
+                    width: "100%",
+                    height: 220,
+                    marginBottom: 10,
+                  }}
+                  resizeMode="cover"
                 />
+              ) : null}
 
-                <Text style={styles.actionNumber}>
-                  20
+              <Text style={styles.postText}>
+                {post.legenda || post.texto}
+              </Text>
+
+              {post.hashtags ? (
+                <Text
+                  style={{
+                    marginTop: 5,
+                    color: "#39747A",
+                  }}
+                >
+                  {post.hashtags}
                 </Text>
-              </TouchableOpacity>
+              ) : null}
 
-              <TouchableOpacity style={styles.actionButton}>
-                <Image
-                  source={require("../../../assets/comentario.png")}
-                  style={styles.actionIcon}
-                  resizeMode="contain"
-                />
+              <View style={styles.postActions}>
 
-                <Text style={styles.actionNumber}>
-                  3
-                </Text>
-              </TouchableOpacity>
+                <View style={styles.leftActions}>
 
-            </View>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() =>
+                      handleCurtir(post)
+                    }
+                  >
 
-            <TouchableOpacity>
-              <Image
-                source={require("../../../assets/salvar.png")}
-                style={styles.actionIcon}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+                    <Image
+                      source={require("../../../assets/curtida.png")}
+                      style={styles.actionIcon}
+                      resizeMode="contain"
+                    />
 
-          </View>
+                    <Text style={styles.actionNumber}>
+                      {post.curtidas}
+                    </Text>
 
-        </View>
+                  </TouchableOpacity>
 
-        {/* SEGUNDO POST */}
-        <View style={styles.postCard}>
+                  <TouchableOpacity
+                    style={styles.actionButton}
+                    onPress={() =>
+                      navigation.navigate(
+                        "Publicacao",
+                        {
+                          post,
+                        }
+                      )
+                    }
+                  >
 
-          <View style={styles.postHeader}>
+                    <Image
+                      source={require("../../../assets/comentario.png")}
+                      style={styles.actionIcon}
+                      resizeMode="contain"
+                    />
 
-            <View style={styles.userInfo}>
-              <View style={styles.avatar} />
+                    <Text style={styles.actionNumber}>
+                      {post.comentarios}
+                    </Text>
 
-              <View style={styles.userTexts}>
-                <Text style={styles.userName}>
-                  Eloysa
-                </Text>
+                  </TouchableOpacity>
 
-                <Text style={styles.postTime}>
-                  Hoje às 10:30
-                </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={() =>
+                    handleSalvar(post)
+                  }
+                >
+
+                  <Image
+                    source={require("../../../assets/salvar.png")}
+                    style={styles.actionIcon}
+                    resizeMode="contain"
+                  />
+
+                </TouchableOpacity>
+
               </View>
-            </View>
-
-            <TouchableOpacity style={styles.moreButton}>
-              <Image
-                source={require("../../../assets/pontos.png")}
-                style={styles.pontosIcon}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-
-          </View>
-
-          <Text style={styles.postText}>
-            Lorem ipsum dolor sit amet, consectetur{"\n"}
-            adipiscing
-          </Text>
-
-          <View style={styles.postActions}>
-
-            <View style={styles.leftActions}>
-
-              <TouchableOpacity style={styles.actionButton}>
-                <Image
-                  source={require("../../../assets/curtida.png")}
-                  style={styles.actionIcon}
-                  resizeMode="contain"
-                />
-
-                <Text style={styles.actionNumber}>
-                  20
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.actionButton}>
-                <Image
-                  source={require("../../../assets/comentario.png")}
-                  style={styles.actionIcon}
-                  resizeMode="contain"
-                />
-
-                <Text style={styles.actionNumber}>
-                  3
-                </Text>
-              </TouchableOpacity>
 
             </View>
 
-            <TouchableOpacity>
-              <Image
-                source={require("../../../assets/salvar.png")}
-                style={styles.actionIcon}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+          ))
 
-          </View>
+        )}
 
-        </View>
+      </ScrollView>
 
-      </View>
-
-      {/* FOOTER */}
-      <Footer />
+      <Footer
+        navigation={navigation}
+        telaAtiva="home"
+      />
 
     </View>
   );
 }
-
-export { Home };
-export default Home;

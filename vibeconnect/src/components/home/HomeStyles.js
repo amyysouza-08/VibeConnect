@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 25,
-    paddingTop: 70,
+    paddingTop: 40,
   },
 
   logoText: {

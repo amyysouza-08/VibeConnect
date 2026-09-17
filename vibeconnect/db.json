@@ -1,0 +1,71 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "username": "eloysamarques",
+      "nome": "Eloysa Marques",
+      "email": "eloysa@email.com",
+      "senha": "123456",
+      "bio": "Compartilhando boas vibrações ✨",
+      "localizacao": "Piauí, PI",
+      "seguidores": 120,
+      "seguindo": 85,
+      "publicacoes": 9
+    },
+    {
+      "id": 2,
+      "username": "jamesribeiro",
+      "nome": "James Ribeiro",
+      "email": "james@email.com",
+      "senha": "123456",
+      "bio": "Vivendo e compartilhando momentos.",
+      "localizacao": "São Paulo, SP",
+      "seguidores": 90,
+      "seguindo": 70,
+      "publicacoes": 5
+    }
+  ],
+  "publicacoes": [
+    {
+      "id": 1,
+      "usuarioId": 1,
+      "username": "eloysamarques",
+      "localizacao": "Piauí, PI",
+      "imagem": "igreja.png",
+      "curtidas": 20,
+      "comentarios": 3,
+      "legenda": "Piauí é lindo! 😍",
+      "hashtags": "#VibeTop #Piauí #MinhaCidade"
+    }
+  ],
+  "notificacoes": [
+    {
+      "id": 1,
+      "nome": "James Silva",
+      "mensagem": "curtiu sua publicação.",
+      "horario": "10:30",
+      "tipo": "curtida"
+    },
+    {
+      "id": 2,
+      "nome": "Eloysa Marques",
+      "mensagem": "curtiu sua publicação.",
+      "horario": "10:30",
+      "tipo": "curtida"
+    },
+    {
+      "id": 3,
+      "nome": "Eloysa Marques",
+      "mensagem": "comentou sua publicação.",
+      "horario": "09:45",
+      "tipo": "comentario"
+    },
+    {
+      "id": 4,
+      "nome": "Amy Lee",
+      "mensagem": "começou a seguir você.",
+      "horario": "Ontem",
+      "tipo": "seguidor"
+    }
+  ]
+}

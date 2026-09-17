@@ -1,20 +1,34 @@
+import React from "react";
+
 import {
   View,
   Text,
-  Image,
   TouchableOpacity,
+  Image,
 } from "react-native";
 
-import styles from "../footer/FooterStyles";
+import styles from "./FooterStyles";
 
-export default function Footer() {
+export default function Footer({
+  navigation,
+  telaAtiva,
+}) {
   return (
     <View style={styles.footer}>
 
-      <TouchableOpacity style={styles.item}>
+      {/* INÍCIO */}
+      <TouchableOpacity
+        style={styles.botao}
+        onPress={() => navigation?.navigate("Home")}
+        activeOpacity={0.7}
+      >
         <Image
           source={require("../../../assets/casa.png")}
-          style={styles.icone}
+          style={[
+            styles.icone,
+            telaAtiva === "home" && styles.iconeAtivo,
+          ]}
+          resizeMode="contain"
         />
 
         <Text style={styles.texto}>
@@ -22,11 +36,18 @@ export default function Footer() {
         </Text>
       </TouchableOpacity>
 
-
-      <TouchableOpacity style={styles.item}>
+      {/* CRIAR */}
+      <TouchableOpacity
+        style={styles.botao}
+        onPress={() =>
+          navigation?.navigate("CriarPublicacao")
+        }
+        activeOpacity={0.7}
+      >
         <Image
           source={require("../../../assets/criar.png")}
           style={styles.icone}
+          resizeMode="contain"
         />
 
         <Text style={styles.texto}>
@@ -34,11 +55,22 @@ export default function Footer() {
         </Text>
       </TouchableOpacity>
 
-
-      <TouchableOpacity style={styles.item}>
+      {/* NOTIFICAÇÕES */}
+      <TouchableOpacity
+        style={styles.botao}
+        onPress={() =>
+          navigation?.navigate("Notificacao")
+        }
+        activeOpacity={0.7}
+      >
         <Image
-          source={require("../../../assets/sino.png")}
-          style={styles.icone}
+          source={require("../../../assets/notificacao.png")}
+          style={[
+            styles.icone,
+            telaAtiva === "notificacao" &&
+              styles.iconeAtivo,
+          ]}
+          resizeMode="contain"
         />
 
         <Text style={styles.texto}>
@@ -46,11 +78,22 @@ export default function Footer() {
         </Text>
       </TouchableOpacity>
 
-
-      <TouchableOpacity style={styles.item}>
+      {/* PERFIL */}
+      <TouchableOpacity
+        style={styles.botao}
+        onPress={() =>
+          navigation?.navigate("Perfil")
+        }
+        activeOpacity={0.7}
+      >
         <Image
           source={require("../../../assets/perfil.png")}
-          style={styles.icone}
+          style={[
+            styles.icone,
+            telaAtiva === "perfil" &&
+              styles.iconeAtivo,
+          ]}
+          resizeMode="contain"
         />
 
         <Text style={styles.texto}>
