@@ -1,18 +1,4 @@
-// ==============================
-// CONFIGURAÇÃO
-// ==============================
-// IMPORTANTE: "localhost" só funciona se você testar no navegador do
-// próprio PC. Em Expo Go / emulador, o app roda em outro dispositivo
-// e "localhost" aponta pra ele mesmo, não pro seu computador.
-//
-// - Emulador Android: use 10.0.2.2 no lugar do IP
-// - Celular físico (Expo Go): use o IP local do seu PC na rede Wi-Fi
-//   (ex: 192.168.0.15) — descubra com `ipconfig` (Windows) ou
-//   `ifconfig`/`ip a` (Mac/Linux). PC e celular precisam estar na
-//   MESMA rede Wi-Fi.
-// - iOS Simulator (só Mac): localhost funciona normalmente.
-//
-// Rode o servidor com: npx json-server --watch db.json --port 3000
+
 
 const API_URL = "http://192.168.0.15:3000"; // <-- TROQUE pelo seu IP
 
