@@ -4,9 +4,7 @@ const API_URL = "http://172.16.2.139:3000";
 
 const CHAVE_USUARIO_LOGADO = "@VibeConnect:usuario";
 
-// =====================================================
 // REQUISIÇÃO PRINCIPAL
-// =====================================================
 
 async function requisicao(url, opcoes = {}) {
   try {
@@ -14,7 +12,6 @@ async function requisicao(url, opcoes = {}) {
 
     const resposta = await fetch(url, {
       ...opcoes,
-
       headers: {
         "Content-Type": "application/json",
         ...(opcoes.headers || {}),
@@ -32,7 +29,9 @@ async function requisicao(url, opcoes = {}) {
         if (erroJson?.message) {
           mensagem = erroJson.message;
         }
-      } catch (erro) { }
+      } catch (erro) {
+        // ignora erro ao tentar ler resposta
+      }
 
       throw new Error(mensagem);
     }
@@ -58,9 +57,8 @@ async function requisicao(url, opcoes = {}) {
   }
 }
 
-// =====================================================
 // FORMATAR HORÁRIO
-// =====================================================
+
 
 export function formatarHorario(data) {
   if (!data) {
@@ -131,18 +129,14 @@ export function formatarHorario(data) {
   );
 }
 
-// =====================================================
-// NORMALIZAR PUBLICAÇÃO
-// =====================================================
 
-function normalizarPost(
-  publicacao,
-  usuarios = []
-) {
+// NORMALIZAR PUBLICAÇÃO
+
+function normalizarPost(publicacao, usuarios = []) {
   const autor = usuarios.find(
     (usuario) =>
-      Number(usuario.id) ===
-      Number(publicacao.usuarioId)
+      String(usuario.id) ===
+      String(publicacao.usuarioId)
   );
 
   const dataCriacao =
@@ -150,42 +144,48 @@ function normalizarPost(
     publicacao.dataCriacao ||
     publicacao.createdAt;
 
+  const username =
+    autor?.username ||
+    publicacao.username ||
+    "";
+
+  const nome =
+    autor?.nome ||
+    publicacao.nome ||
+    username ||
+    "Usuário";
+
+  const fotoPerfil =
+    autor?.fotoPerfil ||
+    publicacao.fotoPerfil ||
+    "";
+
   return {
     id: publicacao.id,
 
     usuarioId:
       publicacao.usuarioId,
 
-    username:
-      publicacao.username ||
-      autor?.username ||
-      "",
+    username,
+
+    nome,
 
     usuario: {
-      id: autor?.id || publicacao.usuarioId,
+      id:
+        autor?.id ||
+        publicacao.usuarioId,
 
-      nome:
-        publicacao.nome ||
-        autor?.nome ||
-        publicacao.username ||
-        autor?.username ||
-        "Usuário",
+      nome,
 
       usuario:
-        publicacao.username ||
-        autor?.username ||
-        "",
+        username,
 
-      username:
-        publicacao.username ||
-        autor?.username ||
-        "",
+      username,
 
-      fotoPerfil:
-        publicacao.fotoPerfil ||
-        autor?.fotoPerfil ||
-        null,
+      fotoPerfil,
     },
+
+    fotoPerfil,
 
     texto:
       publicacao.legenda ||
@@ -197,38 +197,9 @@ function normalizarPost(
       publicacao.texto ||
       "",
 
-    criadoEm:
-      dataCriacao || null,
-
-    horario:
-      formatarHorario(dataCriacao),
-
-    curtidas:
-      Number(
-        publicacao.curtidas || 0
-      ),
-
-    curtido:
-      publicacao.curtido ?? false,
-
-    comentarios:
-      Number(
-        publicacao.comentarios || 0
-      ),
-
-    comentariosLista:
-      Array.isArray(
-        publicacao.comentariosLista
-      )
-        ? publicacao.comentariosLista
-        : [],
-
-    salvo:
-      publicacao.salvo ?? false,
-
     imagem:
       publicacao.imagem ||
-      null,
+      "",
 
     hashtags:
       publicacao.hashtags ||
@@ -237,12 +208,34 @@ function normalizarPost(
     localizacao:
       publicacao.localizacao ||
       "",
+
+    criadoEm:
+      dataCriacao || null,
+
+    horario:
+      formatarHorario(dataCriacao),
+
+    curtidas:
+      Number(publicacao.curtidas || 0),
+
+    curtido:
+      publicacao.curtido === true,
+
+    comentarios:
+      Number(publicacao.comentarios || 0),
+
+    comentariosLista:
+      Array.isArray(publicacao.comentariosLista)
+        ? publicacao.comentariosLista
+        : [],
+
+    salvo:
+      publicacao.salvo === true,
   };
 }
 
-// =====================================================
+
 // OBTER USUÁRIO LOGADO
-// =====================================================
 
 export async function obterUsuarioLogado() {
   try {
@@ -271,13 +264,10 @@ export async function obterUsuarioLogado() {
   }
 }
 
-// =====================================================
-// SALVAR USUÁRIO LOGADO
-// =====================================================
 
-async function salvarUsuarioLogado(
-  usuario
-) {
+// SALVAR USUÁRIO LOGADO
+
+async function salvarUsuarioLogado(usuario) {
   try {
     await AsyncStorage.setItem(
       CHAVE_USUARIO_LOGADO,
@@ -293,12 +283,13 @@ async function salvarUsuarioLogado(
       "ERRO AO SALVAR USUÁRIO:",
       erro
     );
+
+    throw erro;
   }
 }
 
-// =====================================================
+
 // SAIR DA CONTA
-// =====================================================
 
 export async function sairDaConta() {
   await AsyncStorage.removeItem(
@@ -306,9 +297,8 @@ export async function sairDaConta() {
   );
 }
 
-// =====================================================
+
 // CRIAR USUÁRIO
-// =====================================================
 
 export async function criarUsuario(
   nome,
@@ -316,7 +306,30 @@ export async function criarUsuario(
   senha
 ) {
   const emailNormalizado =
-    email.trim().toLowerCase();
+    String(email || "")
+      .trim()
+      .toLowerCase();
+
+  const nomeLimpo =
+    String(nome || "").trim();
+
+  if (!nomeLimpo) {
+    throw new Error(
+      "Digite seu nome."
+    );
+  }
+
+  if (!emailNormalizado) {
+    throw new Error(
+      "Digite seu e-mail."
+    );
+  }
+
+  if (!senha) {
+    throw new Error(
+      "Digite sua senha."
+    );
+  }
 
   const resBusca =
     await requisicao(
@@ -328,16 +341,16 @@ export async function criarUsuario(
   const existentes =
     await resBusca.json();
 
-  if (existentes.length > 0) {
+  if (
+    Array.isArray(existentes) &&
+    existentes.length > 0
+  ) {
     throw new Error(
       "Este e-mail já está cadastrado."
     );
   }
 
-  const nomeLimpo =
-    nome.trim();
-
-  const username =
+  let username =
     nomeLimpo
       .toLowerCase()
       .normalize("NFD")
@@ -354,6 +367,11 @@ export async function criarUsuario(
         ""
       );
 
+  if (!username) {
+    username =
+      `usuario${Date.now()}`;
+  }
+
   const novoUsuario = {
     username,
 
@@ -369,7 +387,6 @@ export async function criarUsuario(
 
     localizacao: "",
 
-    // FOTO DE PERFIL
     fotoPerfil: "",
 
     seguidores: 0,
@@ -403,6 +420,9 @@ export async function criarUsuario(
 
     usuario:
       criado.username,
+
+    fotoPerfil:
+      criado.fotoPerfil || "",
   };
 
   await salvarUsuarioLogado(
@@ -412,16 +432,15 @@ export async function criarUsuario(
   return usuario;
 }
 
-// =====================================================
+
 // LOGIN
-// =====================================================
 
 export async function loginUsuario(
   emailOuUsuario,
   senha
 ) {
   const login =
-    emailOuUsuario
+    String(emailOuUsuario || "")
       .trim()
       .toLowerCase();
 
@@ -456,7 +475,7 @@ export async function loginUsuario(
           username === login
         ) &&
         senhaUsuario ===
-        String(senha)
+          String(senha)
       );
     });
 
@@ -484,13 +503,16 @@ export async function loginUsuario(
   return usuario;
 }
 
-// =====================================================
-// PEGAR USUÁRIO
-// =====================================================
 
-export async function getUsuario(
-  id = 1
-) {
+// PEGAR USUÁRIO
+
+export async function getUsuario(id) {
+  if (!id) {
+    throw new Error(
+      "Usuário não identificado."
+    );
+  }
+
   const res =
     await requisicao(
       `${API_URL}/usuarios/${id}`
@@ -511,9 +533,7 @@ export async function getUsuario(
   };
 }
 
-// =====================================================
 // ATUALIZAR USUÁRIO
-// =====================================================
 
 export async function atualizarUsuario(
   id,
@@ -530,10 +550,6 @@ export async function atualizarUsuario(
       "Nenhum dado para atualizar."
     );
   }
-
-  // ===================================================
-  // DADOS
-  // ===================================================
 
   const nome =
     String(
@@ -581,9 +597,8 @@ export async function atualizarUsuario(
     }
   );
 
-  // ===================================================
+
   // BUSCAR USUÁRIOS
-  // ===================================================
 
   const resUsuarios =
     await requisicao(
@@ -593,9 +608,8 @@ export async function atualizarUsuario(
   const usuarios =
     await resUsuarios.json();
 
-  // ===================================================
+
   // VERIFICAR USERNAME
-  // ===================================================
 
   const usernameExistente =
     usuarios.find(
@@ -603,9 +617,9 @@ export async function atualizarUsuario(
         String(
           item.username || ""
         ).toLowerCase() ===
-        username &&
+          username &&
         String(item.id) !==
-        String(id)
+          String(id)
     );
 
   if (usernameExistente) {
@@ -614,9 +628,8 @@ export async function atualizarUsuario(
     );
   }
 
-  // ===================================================
+
   // PEGAR USUÁRIO ATUAL
-  // ===================================================
 
   const resUsuarioAtual =
     await requisicao(
@@ -626,18 +639,16 @@ export async function atualizarUsuario(
   const usuarioAtual =
     await resUsuarioAtual.json();
 
-  // ===================================================
-  // FOTO
-  // ===================================================
+
+  // MANTER FOTO ANTERIOR SE NÃO FOI ALTERADA
 
   const fotoFinal =
     fotoPerfil ||
     usuarioAtual.fotoPerfil ||
     "";
 
-  // ===================================================
-  // PATCH
-  // ===================================================
+
+  // ATUALIZAR
 
   const res =
     await requisicao(
@@ -657,9 +668,8 @@ export async function atualizarUsuario(
   const usuarioAtualizado =
     await res.json();
 
-  // ===================================================
-  // STORAGE
-  // ===================================================
+
+  // ATUALIZAR STORAG
 
   const usuarioAnterior =
     await obterUsuarioLogado();
@@ -690,63 +700,88 @@ export async function atualizarUsuario(
   return usuarioFinal;
 }
 
-// =====================================================
+
 // PEGAR POSTS
-// =====================================================
 
 export async function getPosts() {
-  const [
-    resPub,
-    resUsu,
-  ] = await Promise.all([
-    requisicao(
-      `${API_URL}/publicacoes`
-    ),
+  try {
+    const [
+      resPub,
+      resUsu,
+    ] = await Promise.all([
+      requisicao(
+        `${API_URL}/publicacoes`
+      ),
 
-    requisicao(
-      `${API_URL}/usuarios`
-    ),
-  ]);
+      requisicao(
+        `${API_URL}/usuarios`
+      ),
+    ]);
 
-  const publicacoes =
-    await resPub.json();
+    const publicacoes =
+      await resPub.json();
 
-  const usuarios =
-    await resUsu.json();
+    const usuarios =
+      await resUsu.json();
 
-  const ordenadas =
-    [...publicacoes].sort(
-      (a, b) => {
-        const dataA =
-          new Date(
-            a.criadoEm || 0
-          ).getTime();
+    if (!Array.isArray(publicacoes)) {
+      throw new Error(
+        "A resposta de publicações não é uma lista."
+      );
+    }
 
-        const dataB =
-          new Date(
-            b.criadoEm || 0
-          ).getTime();
+    if (!Array.isArray(usuarios)) {
+      throw new Error(
+        "A resposta de usuários não é uma lista."
+      );
+    }
 
-        return dataB - dataA;
-      }
+    const ordenadas =
+      [...publicacoes].sort(
+        (a, b) => {
+          const dataA =
+            new Date(
+              a.criadoEm ||
+              a.dataCriacao ||
+              a.createdAt ||
+              0
+            ).getTime();
+
+          const dataB =
+            new Date(
+              b.criadoEm ||
+              b.dataCriacao ||
+              b.createdAt ||
+              0
+            ).getTime();
+
+          return dataB - dataA;
+        }
+      );
+
+    return ordenadas.map(
+      (publicacao) =>
+        normalizarPost(
+          publicacao,
+          usuarios
+        )
+    );
+  } catch (erro) {
+    console.log(
+      "ERRO AO BUSCAR POSTS:",
+      erro
     );
 
-  return ordenadas.map(
-    (publicacao) =>
-      normalizarPost(
-        publicacao,
-        usuarios
-      )
-  );
+    throw erro;
+  }
 }
 
-// =====================================================
+
 // CRIAR PUBLICAÇÃO
-// =====================================================
 
 export async function criarPublicacao({
   usuarioId,
-  username,
+  username = "",
   nome = "",
   localizacao = "",
   imagem = "",
@@ -760,7 +795,7 @@ export async function criarPublicacao({
   }
 
   if (
-    !legenda.trim() &&
+    !String(legenda).trim() &&
     !imagem
   ) {
     throw new Error(
@@ -784,7 +819,7 @@ export async function criarPublicacao({
       imagem || "",
 
     legenda:
-      legenda.trim(),
+      String(legenda || "").trim(),
 
     hashtags:
       hashtags || "",
@@ -818,14 +853,24 @@ export async function criarPublicacao({
   const criada =
     await res.json();
 
+  // Busca os usuários novamente para
+  // retornar o autor corretamente
+  const resUsuarios =
+    await requisicao(
+      `${API_URL}/usuarios`
+    );
+
+  const usuarios =
+    await resUsuarios.json();
+
   return normalizarPost(
-    criada
+    criada,
+    usuarios
   );
 }
 
-// =====================================================
+
 // CRIAR NOTIFICAÇÃO
-// =====================================================
 
 async function criarNotificacao({
   destinatarioId,
@@ -898,15 +943,7 @@ async function criarNotificacao({
         }
       );
 
-    const criada =
-      await res.json();
-
-    console.log(
-      "NOTIFICAÇÃO CRIADA:",
-      criada
-    );
-
-    return criada;
+    return await res.json();
   } catch (erro) {
     console.log(
       "ERRO AO CRIAR NOTIFICAÇÃO:",
@@ -917,13 +954,10 @@ async function criarNotificacao({
   }
 }
 
-// =====================================================
-// CURTIR / DESCURTIR
-// =====================================================
 
-export async function curtirPost(
-  postId
-) {
+// CURTIR / DESCURTIR
+
+export async function curtirPost(postId) {
   const id =
     typeof postId === "object"
       ? postId.id
@@ -944,19 +978,15 @@ export async function curtirPost(
     await resGet.json();
 
   const curtido =
-    !post.curtido;
+    !Boolean(post.curtido);
 
   const curtidas =
     curtido
-      ? Number(
-        post.curtidas || 0
-      ) + 1
+      ? Number(post.curtidas || 0) + 1
       : Math.max(
-        Number(
-          post.curtidas || 0
-        ) - 1,
-        0
-      );
+          Number(post.curtidas || 0) - 1,
+          0
+        );
 
   const resPatch =
     await requisicao(
@@ -979,12 +1009,6 @@ export async function curtirPost(
       await obterUsuarioLogado();
 
     if (usuario) {
-      const nome =
-        usuario.nome ||
-        usuario.username ||
-        usuario.usuario ||
-        "Usuário";
-
       await criarNotificacao({
         destinatarioId:
           post.usuarioId,
@@ -992,7 +1016,11 @@ export async function curtirPost(
         usuarioId:
           usuario.id,
 
-        nome,
+        nome:
+          usuario.nome ||
+          usuario.username ||
+          usuario.usuario ||
+          "Usuário",
 
         username:
           usuario.username ||
@@ -1016,13 +1044,10 @@ export async function curtirPost(
   );
 }
 
-// =====================================================
-// SALVAR / REMOVER DOS SALVOS
-// =====================================================
 
-export async function salvarPost(
-  postId
-) {
+// SALVAR / REMOVER DOS SALVOS
+
+export async function salvarPost(postId) {
   const id =
     typeof postId === "object"
       ? postId.id
@@ -1043,7 +1068,7 @@ export async function salvarPost(
     await resGet.json();
 
   const salvo =
-    !post.salvo;
+    !Boolean(post.salvo);
 
   const resPatch =
     await requisicao(
@@ -1065,12 +1090,6 @@ export async function salvarPost(
       await obterUsuarioLogado();
 
     if (usuario) {
-      const nome =
-        usuario.nome ||
-        usuario.username ||
-        usuario.usuario ||
-        "Usuário";
-
       await criarNotificacao({
         destinatarioId:
           post.usuarioId,
@@ -1078,7 +1097,11 @@ export async function salvarPost(
         usuarioId:
           usuario.id,
 
-        nome,
+        nome:
+          usuario.nome ||
+          usuario.username ||
+          usuario.usuario ||
+          "Usuário",
 
         username:
           usuario.username ||
@@ -1102,9 +1125,8 @@ export async function salvarPost(
   );
 }
 
-// =====================================================
+
 // COMENTAR PUBLICAÇÃO
-// =====================================================
 
 export async function comentarPost(
   postId,
@@ -1142,6 +1164,11 @@ export async function comentarPost(
       dadosComentario.usuarioId,
 
     username:
+      dadosComentario.username ||
+      "Usuário",
+
+    nome:
+      dadosComentario.nome ||
       dadosComentario.username ||
       "Usuário",
 
@@ -1187,12 +1214,6 @@ export async function comentarPost(
     await obterUsuarioLogado();
 
   if (usuario) {
-    const nome =
-      usuario.nome ||
-      usuario.username ||
-      usuario.usuario ||
-      "Usuário";
-
     await criarNotificacao({
       destinatarioId:
         post.usuarioId,
@@ -1200,7 +1221,11 @@ export async function comentarPost(
       usuarioId:
         usuario.id,
 
-      nome,
+      nome:
+        usuario.nome ||
+        usuario.username ||
+        usuario.usuario ||
+        "Usuário",
 
       username:
         usuario.username ||
@@ -1218,14 +1243,22 @@ export async function comentarPost(
     });
   }
 
+  const resUsuarios =
+    await requisicao(
+      `${API_URL}/usuarios`
+    );
+
+  const usuarios =
+    await resUsuarios.json();
+
   return normalizarPost(
-    atualizado
+    atualizado,
+    usuarios
   );
 }
 
-// =====================================================
+
 // SEGUIR / DEIXAR DE SEGUIR
-// =====================================================
 
 export async function seguirUsuario(
   usuarioId
@@ -1246,16 +1279,12 @@ export async function seguirUsuario(
   }
 
   const idLogado =
-    Number(
-      usuarioLogado.id
-    );
+    Number(usuarioLogado.id);
 
   const idDestino =
     Number(usuarioId);
 
-  if (
-    Number.isNaN(idDestino)
-  ) {
+  if (Number.isNaN(idDestino)) {
     throw new Error(
       "Usuário inválido."
     );
@@ -1267,10 +1296,6 @@ export async function seguirUsuario(
     );
   }
 
-  // ===================================================
-  // USUÁRIO DESTINO
-  // ===================================================
-
   const resDestino =
     await requisicao(
       `${API_URL}/usuarios/${idDestino}`
@@ -1279,36 +1304,24 @@ export async function seguirUsuario(
   const usuarioDestino =
     await resDestino.json();
 
-  // ===================================================
-  // LISTAS
-  // ===================================================
-
   const seguidoresIds =
     Array.isArray(
       usuarioDestino.seguidoresIds
     )
-      ? usuarioDestino.seguidoresIds.map(
-        Number
-      )
+      ? usuarioDestino.seguidoresIds.map(Number)
       : [];
 
   const seguindoIdsLogado =
     Array.isArray(
       usuarioLogado.seguindoIds
     )
-      ? usuarioLogado.seguindoIds.map(
-        Number
-      )
+      ? usuarioLogado.seguindoIds.map(Number)
       : [];
 
   const jaSegue =
     seguindoIdsLogado.includes(
       idDestino
     );
-
-  // ===================================================
-  // DEIXAR DE SEGUIR
-  // ===================================================
 
   if (jaSegue) {
     const novosSeguidores =
@@ -1380,10 +1393,6 @@ export async function seguirUsuario(
     };
   }
 
-  // ===================================================
-  // SEGUIR
-  // ===================================================
-
   const novosSeguidores = [
     ...seguidoresIds,
     idLogado,
@@ -1443,10 +1452,6 @@ export async function seguirUsuario(
       "",
   });
 
-  // ===================================================
-  // NOTIFICAÇÃO
-  // ===================================================
-
   const nome =
     usuarioLogado.nome ||
     usuarioLogado.username ||
@@ -1482,9 +1487,8 @@ export async function seguirUsuario(
   };
 }
 
-// =====================================================
+
 // EXCLUIR PUBLICAÇÃO
-// =====================================================
 
 export async function excluirPost(
   postId
@@ -1531,9 +1535,8 @@ export async function excluirPost(
   return true;
 }
 
-// =====================================================
+
 // NOTIFICAÇÕES
-// =====================================================
 
 export async function getNotificacoes() {
   const usuario =
@@ -1548,13 +1551,15 @@ export async function getNotificacoes() {
     await res.json();
 
   let filtradas =
-    notificacoes;
+    Array.isArray(notificacoes)
+      ? notificacoes
+      : [];
 
   if (
     usuario?.id !== undefined
   ) {
     filtradas =
-      notificacoes.filter(
+      filtradas.filter(
         (notificacao) =>
           String(
             notificacao.destinatarioId
@@ -1591,9 +1596,7 @@ export async function getNotificacoes() {
   );
 }
 
-// =====================================================
 // MARCAR NOTIFICAÇÃO COMO LIDA
-// =====================================================
 
 export async function marcarNotificacaoComoLida(
   id
@@ -1617,9 +1620,8 @@ export async function marcarNotificacaoComoLida(
   return await res.json();
 }
 
-// =====================================================
+
 // MARCAR TODAS COMO LIDAS
-// =====================================================
 
 export async function marcarTodasNotificacoesComoLidas() {
   const usuario =
@@ -1663,9 +1665,8 @@ export async function marcarTodasNotificacoesComoLidas() {
   );
 }
 
-// =====================================================
+
 // EXCLUIR NOTIFICAÇÃO
-// =====================================================
 
 export async function excluirNotificacao(
   id

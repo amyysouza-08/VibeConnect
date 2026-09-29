@@ -14,9 +14,8 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
 
-  // ===================================================
+
   // ABAS
-  // ===================================================
 
   abas: {
     height: 60,
@@ -44,9 +43,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  // ===================================================
+
   // GRADE DO FIGMA
-  // ===================================================
 
   iconeAba: {
     width: 24,
@@ -57,9 +55,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 
-  // ===================================================
+
   // PUBLICAÇÕES
-  // ===================================================
 
   publicacoes: {
     flexDirection: "row",

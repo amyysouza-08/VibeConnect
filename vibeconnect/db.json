@@ -6,12 +6,12 @@
       "nome": "Eloysa Soares",
       "email": "eloysa@email.com",
       "senha": "123456",
-      "bio": "Compartilhando boas energias ✨",
+      "bio": "Compartilhando boas energias oi",
       "localizacao": "Piauí, PI",
       "seguidores": 120,
       "seguindo": 85,
       "publicacoes": 9,
-      "fotoPerfil": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/EC14B73E-D0C1-4597-96D6-7FCFAC8A2D6E.jpg"
+      "fotoPerfil": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/AEADB6A9-655B-4935-9BF6-B8BA5CFBD6FB.jpg"
     },
     {
       "id": "2",
@@ -37,33 +37,54 @@
       "publicacoes": 0,
       "id": "hybock1RDfs",
       "fotoPerfil": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/EC14B73E-D0C1-4597-96D6-7FCFAC8A2D6E.jpg"
+    },
+    {
+      "username": "amy",
+      "nome": "amy",
+      "email": "amy@lee",
+      "senha": "123456",
+      "bio": "",
+      "localizacao": "",
+      "fotoPerfil": "",
+      "seguidores": 0,
+      "seguindo": 0,
+      "publicacoes": 0,
+      "seguidoresIds": [],
+      "seguindoIds": [],
+      "id": "_GTltaPKm70"
+    },
+    {
+      "username": "matheus",
+      "nome": "matheus",
+      "email": "matheus@lima",
+      "senha": "123456",
+      "bio": "",
+      "localizacao": "",
+      "fotoPerfil": "",
+      "seguidores": 0,
+      "seguindo": 0,
+      "publicacoes": 0,
+      "seguidoresIds": [],
+      "seguindoIds": [],
+      "id": "nkHUeETll6M"
+    },
+    {
+      "username": "teste",
+      "nome": "teste",
+      "email": "teste@teste",
+      "senha": "123456",
+      "bio": "",
+      "localizacao": "",
+      "fotoPerfil": "",
+      "seguidores": 0,
+      "seguindo": 0,
+      "publicacoes": 0,
+      "seguidoresIds": [],
+      "seguindoIds": [],
+      "id": "_wnZG_DMf5I"
     }
   ],
   "publicacoes": [
-    {
-      "usuarioId": "hybock1RDfs",
-      "username": "amy",
-      "nome": "amy",
-      "localizacao": "",
-      "imagem": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fvibeconnect-03018f67-2397-457e-a38a-7415d6074503/ImagePicker/32326261-b5af-41a5-8a37-c137f1608266.jpeg",
-      "legenda": "uesinho fofinho",
-      "hashtags": "",
-      "criadoEm": "2026-09-29T17:15:49.948Z",
-      "curtidas": 1,
-      "curtido": true,
-      "comentarios": 1,
-      "comentariosLista": [
-        {
-          "id": "1790707266885",
-          "usuarioId": "1",
-          "username": "eloysasoares",
-          "texto": "fffnjk",
-          "criadoEm": "2026-09-29T18:41:06.885Z"
-        }
-      ],
-      "salvo": true,
-      "id": "DKrgIwwERl4"
-    },
     {
       "usuarioId": "1",
       "username": "eloysasoares",
@@ -73,11 +94,11 @@
       "legenda": "Lanche",
       "hashtags": "",
       "criadoEm": "2026-09-29T18:56:09.007Z",
-      "curtidas": 1,
-      "curtido": true,
+      "curtidas": 0,
+      "curtido": false,
       "comentarios": 0,
       "comentariosLista": [],
-      "salvo": true,
+      "salvo": false,
       "id": "obGPrQPD4c0"
     },
     {
@@ -95,6 +116,22 @@
       "comentariosLista": [],
       "salvo": false,
       "id": "kwMah1vOE-g"
+    },
+    {
+      "usuarioId": "1",
+      "username": "eloysasoares",
+      "nome": "Eloysa Soares",
+      "localizacao": "São Caetano do Sul, SP",
+      "imagem": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/213C3898-9944-4C46-A485-2734B216ACF9.jpg",
+      "legenda": "tela preta",
+      "hashtags": "",
+      "criadoEm": "2026-09-29T19:28:55.008Z",
+      "curtidas": 1,
+      "curtido": true,
+      "comentarios": 0,
+      "comentariosLista": [],
+      "salvo": false,
+      "id": "K9PGrlHxb_I"
     }
   ],
   "notificacoes": [
@@ -118,13 +155,6 @@
       "mensagem": "comentou sua publicação.",
       "horario": "09:45",
       "tipo": "comentario"
-    },
-    {
-      "id": "4",
-      "nome": "Amy Lee",
-      "mensagem": "começou a seguir você.",
-      "horario": "Ontem",
-      "tipo": "seguidor"
     },
     {
       "usuarioId": 1,
@@ -154,19 +184,6 @@
       "criadoEm": "2026-09-29T16:12:31.996Z",
       "lida": false,
       "id": "l2UbOSLf92Q"
-    },
-    {
-      "id": "xnz3ylIIw8c",
-      "destinatarioId": "hybock1RDfs",
-      "usuarioId": "hybock1RDfs",
-      "nome": "amy linda",
-      "username": "amylinda",
-      "tipo": "curtida",
-      "mensagem": "curtiu sua publicação.",
-      "postId": "DKrgIwwERl4",
-      "criadoEm": "2026-09-29T17:42:31.838Z",
-      "horario": "Agora",
-      "lida": false
     },
     {
       "id": "i01YiWyXl_0",
@@ -217,6 +234,32 @@
       "mensagem": "salvou sua publicação.",
       "postId": "obGPrQPD4c0",
       "criadoEm": "2026-09-29T19:01:04.927Z",
+      "horario": "Agora",
+      "lida": false
+    },
+    {
+      "id": "Z7umTVuCfmk",
+      "destinatarioId": "1",
+      "usuarioId": "1",
+      "nome": "Eloysa Soares",
+      "username": "eloysasoares",
+      "tipo": "curtida",
+      "mensagem": "curtiu sua publicação.",
+      "postId": "K9PGrlHxb_I",
+      "criadoEm": "2026-09-29T19:29:02.687Z",
+      "horario": "Agora",
+      "lida": false
+    },
+    {
+      "id": "ZipMgmzX1gM",
+      "destinatarioId": "1",
+      "usuarioId": "1",
+      "nome": "Eloysa Soares",
+      "username": "eloysasoares",
+      "tipo": "curtida",
+      "mensagem": "curtiu sua publicação.",
+      "postId": "kwMah1vOE-g",
+      "criadoEm": "2026-09-29T19:29:08.466Z",
       "horario": "Agora",
       "lida": false
     }

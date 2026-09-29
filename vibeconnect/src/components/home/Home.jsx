@@ -48,18 +48,16 @@ export default function Home({ navigation }) {
   const [posts, setPosts] = useState([]);
   const [carregando, setCarregando] = useState(true);
 
-  // =====================================================
+
   // COMENTÁRIO
-  // =====================================================
 
   const [modalComentario, setModalComentario] = useState(false);
   const [comentario, setComentario] = useState("");
   const [postSelecionado, setPostSelecionado] = useState(null);
   const [enviandoComentario, setEnviandoComentario] = useState(false);
 
-  // =====================================================
+
   // CARREGAR PUBLICAÇÕES
-  // =====================================================
 
   useEffect(() => {
     carregarPosts();
@@ -85,9 +83,8 @@ export default function Home({ navigation }) {
     }
   };
 
-  // =====================================================
+
   // CURTIR
-  // =====================================================
 
   const handleCurtir = async (post) => {
     try {
@@ -114,9 +111,8 @@ export default function Home({ navigation }) {
     }
   };
 
-  // =====================================================
+
   // SALVAR
-  // =====================================================
 
   const handleSalvar = async (post) => {
     try {
@@ -143,9 +139,7 @@ export default function Home({ navigation }) {
     }
   };
 
-  // =====================================================
   // ABRIR COMENTÁRIOS
-  // =====================================================
 
   const abrirComentarios = (post) => {
     setPostSelecionado(post);
@@ -153,9 +147,8 @@ export default function Home({ navigation }) {
     setModalComentario(true);
   };
 
-  // =====================================================
+
   // FECHAR COMENTÁRIOS
-  // =====================================================
 
   const fecharComentarios = () => {
     Keyboard.dismiss();
@@ -165,9 +158,8 @@ export default function Home({ navigation }) {
     setModalComentario(false);
   };
 
-  // =====================================================
+
   // ENVIAR COMENTÁRIO
-  // =====================================================
 
   const handleComentar = async () => {
     if (!comentario.trim()) {
@@ -251,9 +243,8 @@ export default function Home({ navigation }) {
     }
   };
 
-  // =====================================================
+
   // EXCLUIR
-  // =====================================================
 
   const handleExcluir = async (post) => {
     try {
@@ -347,9 +338,8 @@ export default function Home({ navigation }) {
     }
   };
 
-  // =====================================================
+
   // MENU DOS TRÊS PONTOS
-  // =====================================================
 
   const abrirMenu = (post) => {
     Alert.alert(
@@ -371,24 +361,20 @@ export default function Home({ navigation }) {
     );
   };
 
-  // =====================================================
+
   // FONTES
-  // =====================================================
 
   if (!fontsLoaded) {
     return null;
   }
 
-  // =====================================================
+
   // TELA
-  // =====================================================
 
   return (
     <View style={styles.container}>
 
-      {/* =================================================
-          FEED
-      ================================================= */}
+      {/*FEED */}
 
       <ScrollView
         style={styles.content}
@@ -414,7 +400,7 @@ export default function Home({ navigation }) {
 
         </Text>
 
-        {/* CARREGANDO */}
+        {/*CARREGANDO */}
 
         {carregando ? (
 
@@ -428,7 +414,7 @@ export default function Home({ navigation }) {
 
         ) : posts.length === 0 ? (
 
-          /* SEM PUBLICAÇÕES */
+          /*SEM PUBLICAÇÕES */
 
           <View
             style={styles.emptyContainer}
@@ -451,9 +437,7 @@ export default function Home({ navigation }) {
               style={styles.postCard}
             >
 
-              {/* =================================================
-                  CABEÇALHO
-              ================================================= */}
+              {/*CABEÇALHO*/}
 
               <View
                 style={styles.postHeader}
@@ -520,9 +504,7 @@ export default function Home({ navigation }) {
 
               </View>
 
-              {/* =================================================
-                  IMAGEM
-              ================================================= */}
+              {/*IMAGEM*/}
 
               {post.imagem ? (
 
@@ -536,9 +518,7 @@ export default function Home({ navigation }) {
 
               ) : null}
 
-              {/* =================================================
-                  LEGENDA
-              ================================================= */}
+              {/* LEGENDA*/}
 
               {post.texto ? (
 
@@ -562,9 +542,7 @@ export default function Home({ navigation }) {
 
               ) : null}
 
-              {/* =================================================
-                  AÇÕES
-              ================================================= */}
+              {/*AÇÕES*/}
 
               <View
                 style={styles.postActions}
@@ -668,9 +646,7 @@ export default function Home({ navigation }) {
 
       </ScrollView>
 
-      {/* =================================================
-          MODAL DE COMENTÁRIO
-      ================================================= */}
+      {/*MODAL DE COMENTÁRIO*/}
 
       <Modal
         visible={modalComentario}

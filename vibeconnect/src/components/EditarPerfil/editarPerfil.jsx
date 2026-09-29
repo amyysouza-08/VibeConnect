@@ -46,9 +46,7 @@ export default function EditarPerfil({ navigation, route }) {
   const [carregando, setCarregando] = useState(true);
   const [salvando, setSalvando] = useState(false);
 
-  // =====================================================
   // CARREGAR USUÁRIO
-  // =====================================================
 
   useEffect(() => {
     carregarUsuario();
@@ -116,9 +114,7 @@ export default function EditarPerfil({ navigation, route }) {
     }
   };
 
-  // =====================================================
   // ESCOLHER FOTO
-  // =====================================================
 
   const escolherFoto = async () => {
     try {
@@ -170,9 +166,8 @@ export default function EditarPerfil({ navigation, route }) {
     }
   };
 
-  // =====================================================
+
   // TIRAR FOTO
-  // =====================================================
 
   const tirarFoto = async () => {
     try {
@@ -223,9 +218,7 @@ export default function EditarPerfil({ navigation, route }) {
     }
   };
 
-  // =====================================================
   // OPÇÕES DA FOTO
-  // =====================================================
 
   const alterarFoto = () => {
     Alert.alert(
@@ -248,9 +241,8 @@ export default function EditarPerfil({ navigation, route }) {
     );
   };
 
-  // =====================================================
+
   // SALVAR
-  // =====================================================
 
   const handleSalvar = async () => {
     if (!usuario) {
@@ -363,17 +355,15 @@ export default function EditarPerfil({ navigation, route }) {
     }
   };
 
-  // =====================================================
+
   // FONTES
-  // =====================================================
 
   if (!fontsLoaded) {
     return null;
   }
 
-  // =====================================================
-  // CARREGANDO
-  // =====================================================
+
+  // CARREGAND
 
   if (carregando) {
     return (
@@ -392,9 +382,8 @@ export default function EditarPerfil({ navigation, route }) {
     );
   }
 
-  // =====================================================
+
   // TELA
-  // =====================================================
 
   return (
     <ScrollView

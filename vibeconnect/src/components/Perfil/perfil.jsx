@@ -41,9 +41,7 @@ export default function Perfil({ navigation }) {
   const [carregando, setCarregando] =
     useState(true);
 
-  // =====================================================
   // CARREGAR PERFIL
-  // =====================================================
 
   const carregarUsuario = async () => {
 
@@ -64,23 +62,17 @@ export default function Perfil({ navigation }) {
         return;
       }
 
-      // =================================================
       // BUSCAR USUÁRIO
-      // =================================================
 
       const dadosUsuario =
         await getUsuario(logado.id);
 
-      // =================================================
       // BUSCAR PUBLICAÇÕES
-      // =================================================
 
       const todosPosts =
         await getPosts();
 
-      // =================================================
       // PEGAR SOMENTE OS POSTS DO USUÁRIO
-      // =================================================
 
       const postsDoUsuario =
         todosPosts.filter(
@@ -134,10 +126,8 @@ export default function Perfil({ navigation }) {
     }
   };
 
-  // =====================================================
-  // ATUALIZAR AO ENTRAR NA TELA
-  // =====================================================
 
+  // ATUALIZAR AO ENTRAR NA TELA
   useFocusEffect(
     useCallback(() => {
 
@@ -146,9 +136,8 @@ export default function Perfil({ navigation }) {
     }, [])
   );
 
-  // =====================================================
+
   // CARREGANDO
-  // =====================================================
 
   if (carregando) {
 
@@ -180,9 +169,8 @@ export default function Perfil({ navigation }) {
     );
   }
 
-  // =====================================================
+
   // TELA
-  // =====================================================
 
   return (
     <View
@@ -196,34 +184,21 @@ export default function Perfil({ navigation }) {
         }
       >
 
-        {/* =============================================
-            HEADER
-        ============================================== */}
 
         <Header
           usuario={usuario}
         />
 
-        {/* =============================================
-            INFORMAÇÕES DO PERFIL
-        ============================================== */}
 
         <Info
           usuario={usuario}
           navigation={navigation}
         />
 
-        {/* =============================================
-            ABAS
-        ============================================== */}
-
+    
         <View
           style={styles.abas}
         >
-
-          {/* ===========================================
-              GRADE DO FIGMA
-          ============================================ */}
 
           <View
             style={styles.aba}
@@ -239,10 +214,6 @@ export default function Perfil({ navigation }) {
 
           </View>
 
-          {/* ===========================================
-              SALVOS
-              ÍCONE DO PACOTE
-          ============================================ */}
 
           <View
             style={styles.aba}
@@ -258,9 +229,7 @@ export default function Perfil({ navigation }) {
 
         </View>
 
-        {/* =============================================
-            PUBLICAÇÕES
-        ============================================== */}
+      
 
         <View
           style={{
@@ -308,9 +277,7 @@ export default function Perfil({ navigation }) {
                   }}
                 >
 
-                  {/* =================================
-                      IMAGEM
-                  ================================== */}
+                
 
                   {post.imagem ? (
 
@@ -327,9 +294,7 @@ export default function Perfil({ navigation }) {
 
                   ) : null}
 
-                  {/* =================================
-                      LEGENDA
-                  ================================== */}
+                 
 
                   {post.texto ? (
 
@@ -354,9 +319,7 @@ export default function Perfil({ navigation }) {
 
                   ) : null}
 
-                  {/* =================================
-                      LOCALIZAÇÃO
-                  ================================== */}
+                  
 
                   {post.localizacao ? (
 
@@ -382,9 +345,7 @@ export default function Perfil({ navigation }) {
 
                   ) : null}
 
-                  {/* =================================
-                      DATA
-                  ================================== */}
+                  
 
                   <View
                     style={{
@@ -417,9 +378,7 @@ export default function Perfil({ navigation }) {
 
       </ScrollView>
 
-      {/* =============================================
-          FOOTER
-      ============================================== */}
+
 
       <Footer
         telaAtiva="perfil"
