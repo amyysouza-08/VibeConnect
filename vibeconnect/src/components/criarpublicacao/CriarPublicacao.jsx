@@ -1,6 +1,4 @@
-import React, {
-  useState,
-} from "react";
+import React, { useState } from "react";
 
 import {
   View,
@@ -9,62 +7,326 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  ActivityIndicator,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 
 import styles from "./CriarPublicacaoStyles";
 
-import {
-  criarPublicacao,
-  obterUsuarioLogado,
-} from "../../api/api";
+import { criarPublicacao } from "../../api/api";
 
-export default function CriarPublicacao({
-  navigation,
-}) {
+export default function CriarPublicacao({ navigation }) {
+  const [legenda, setLegenda] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
-  const [legenda, setLegenda] =
-    useState("");
+  const [imagem, setImagem] = useState("");
+  const [localizacao, setLocalizacao] = useState("");
 
-  const [carregando, setCarregando] =
-    useState(false);
+  // =====================================================
+  // VOLTAR
+  // =====================================================
 
   const handleVoltar = () => {
     navigation.goBack();
   };
 
-  const handlePublicar = async () => {
+  // =====================================================
+  // ABRIR GALERIA
+  // =====================================================
 
-    if (!legenda.trim()) {
-      Alert.alert(
-        "Atenção",
-        "Escreva uma legenda."
+  const handleSelecionarImagem = async () => {
+    try {
+      const permissao =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permissao.granted) {
+        Alert.alert(
+          "Permissão necessária",
+          "Precisamos de acesso à sua galeria para escolher uma foto."
+        );
+        return;
+      }
+
+      const resultado =
+        await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ["images"],
+          allowsEditing: true,
+          aspect: [4, 4],
+          quality: 0.8,
+        });
+
+      if (resultado.canceled) {
+        return;
+      }
+
+      if (
+        resultado.assets &&
+        resultado.assets.length > 0
+      ) {
+        const uri = resultado.assets[0].uri;
+
+        console.log("Imagem selecionada:", uri);
+
+        setImagem(uri);
+      }
+    } catch (error) {
+      console.log(
+        "ERRO AO ABRIR GALERIA:",
+        error
       );
-      return;
-    }
 
-    const usuario =
-      obterUsuarioLogado();
-
-    if (!usuario) {
       Alert.alert(
         "Erro",
-        "Você precisa estar logado."
+        "Não foi possível abrir a galeria."
+      );
+    }
+  };
+
+  // =====================================================
+  // LOCALIZAÇÃO
+  // =====================================================
+
+  const handleAdicionarLocalizacao = async () => {
+    try {
+      setCarregando(true);
+
+      const permissao =
+        await Location.requestForegroundPermissionsAsync();
+
+      if (permissao.status !== "granted") {
+        Alert.alert(
+          "Permissão necessária",
+          "Precisamos da sua localização para adicionar o local da publicação."
+        );
+
+        setCarregando(false);
+        return;
+      }
+
+      const local =
+        await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+
+      console.log(
+        "Coordenadas:",
+        local.coords.latitude,
+        local.coords.longitude
+      );
+
+      const enderecos =
+        await Location.reverseGeocodeAsync({
+          latitude: local.coords.latitude,
+          longitude: local.coords.longitude,
+        });
+
+      if (
+        enderecos &&
+        enderecos.length > 0
+      ) {
+        const endereco = enderecos[0];
+
+        const cidade =
+          endereco.city ||
+          endereco.subregion ||
+          "";
+
+        const estado =
+          endereco.region ||
+          "";
+
+        let textoLocalizacao = "";
+
+        if (cidade && estado) {
+          textoLocalizacao =
+            `${cidade}, ${estado}`;
+        } else if (cidade) {
+          textoLocalizacao = cidade;
+        } else if (estado) {
+          textoLocalizacao = estado;
+        } else {
+          textoLocalizacao =
+            `${local.coords.latitude.toFixed(
+              5
+            )}, ${local.coords.longitude.toFixed(
+              5
+            )}`;
+        }
+
+        setLocalizacao(textoLocalizacao);
+
+        Alert.alert(
+          "Localização",
+          `Localização adicionada:\n${textoLocalizacao}`
+        );
+      } else {
+        const coordenadas =
+          `${local.coords.latitude.toFixed(
+            5
+          )}, ${local.coords.longitude.toFixed(
+            5
+          )}`;
+
+        setLocalizacao(coordenadas);
+
+        Alert.alert(
+          "Localização",
+          "Localização atual adicionada."
+        );
+      }
+    } catch (error) {
+      console.log(
+        "ERRO AO PEGAR LOCALIZAÇÃO:",
+        error
+      );
+
+      Alert.alert(
+        "Erro",
+        "Não foi possível obter sua localização."
+      );
+    } finally {
+      setCarregando(false);
+    }
+  };
+
+  // =====================================================
+  // PUBLICAR
+  // =====================================================
+
+  const handlePublicar = async () => {
+    if (!legenda.trim() && !imagem) {
+      Alert.alert(
+        "Atenção",
+        "Escreva uma legenda ou adicione uma foto."
       );
       return;
     }
 
     try {
-
       setCarregando(true);
 
-      await criarPublicacao({
-        usuarioId: usuario.id,
-        username: usuario.username,
-        legenda: legenda.trim(),
-        localizacao: "",
-        imagem: "",
-        hashtags: "",
-      });
+      console.log(
+        "1 - começando publicação"
+      );
+
+      // =================================================
+      // PEGAR USUÁRIO SALVO
+      // =================================================
+
+      const dadosUsuario =
+        await AsyncStorage.getItem(
+          "@VibeConnect:usuario"
+        );
+
+      console.log(
+        "2 - usuário salvo:",
+        dadosUsuario
+      );
+
+      if (!dadosUsuario) {
+        Alert.alert(
+          "Erro",
+          "Você precisa estar logado."
+        );
+
+        return;
+      }
+
+      // =================================================
+      // TRANSFORMAR JSON EM OBJETO
+      // =================================================
+
+      let usuario;
+
+      try {
+        usuario = JSON.parse(dadosUsuario);
+      } catch (error) {
+        console.log(
+          "ERRO AO LER USUÁRIO:",
+          error
+        );
+
+        Alert.alert(
+          "Erro",
+          "Os dados do usuário estão inválidos."
+        );
+
+        return;
+      }
+
+      console.log(
+        "3 - usuário:",
+        usuario
+      );
+
+      // =================================================
+      // VERIFICAR ID
+      // =================================================
+
+      if (!usuario.id) {
+        Alert.alert(
+          "Erro",
+          "Usuário logado não possui ID."
+        );
+
+        return;
+      }
+
+      console.log(
+        "4 - chamando criarPublicacao"
+      );
+
+      // =================================================
+      // CRIAR PUBLICAÇÃO
+      // =================================================
+
+      const resultado =
+        await criarPublicacao({
+          usuarioId: usuario.id,
+
+          username:
+            usuario.username ||
+            usuario.usuario ||
+            "",
+
+          nome:
+            usuario.nome || "",
+
+          localizacao:
+            localizacao || "",
+
+          imagem:
+            imagem || "",
+
+          legenda:
+            legenda.trim(),
+
+          hashtags: "",
+        });
+
+      console.log(
+        "5 - publicação criada:",
+        resultado
+      );
+
+      // =================================================
+      // LIMPAR CAMPOS
+      // =================================================
+
+      setLegenda("");
+      setImagem("");
+      setLocalizacao("");
+
+      // =================================================
+      // AVISAR USUÁRIO
+      // =================================================
 
       Alert.alert(
         "Publicação",
@@ -77,145 +339,270 @@ export default function CriarPublicacao({
           },
         ]
       );
-
-      setLegenda("");
-
     } catch (error) {
+      console.log(
+        "ERRO COMPLETO AO PUBLICAR:",
+        error
+      );
 
       Alert.alert(
         "Erro",
-        error.message
+        error?.message ||
+          "Não foi possível publicar."
       );
-
     } finally {
       setCarregando(false);
     }
   };
 
+  // =====================================================
+  // TELA
+  // =====================================================
+
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={
+        Platform.OS === "ios"
+          ? "padding"
+          : "height"
+      }
+    >
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
       <View style={styles.header}>
+
+        {/* VOLTAR */}
 
         <TouchableOpacity
           style={styles.botaoVoltar}
           onPress={handleVoltar}
           activeOpacity={0.7}
         >
-
           <Image
-            source={require("../../../assets/seta-voltar.png")}
+            source={require(
+              "../../../assets/seta-voltar.png"
+            )}
             style={styles.setaVoltar}
             resizeMode="contain"
           />
-
         </TouchableOpacity>
+
+        {/* TÍTULO */}
 
         <Text style={styles.titulo}>
           Nova Publicação
         </Text>
 
+        {/* PUBLICAR */}
+
         <TouchableOpacity
-          style={styles.botaoPublicar}
+          style={[
+            styles.botaoPublicar,
+            carregando &&
+              styles.botaoPublicarDesativado,
+          ]}
           onPress={handlePublicar}
           disabled={carregando}
           activeOpacity={0.7}
         >
-
-          <Text style={styles.textoPublicar}>
-            {carregando
-              ? "..."
-              : "Publicar"}
-          </Text>
-
+          {carregando ? (
+            <ActivityIndicator
+              size="small"
+              color="#555555"
+            />
+          ) : (
+            <Text style={styles.textoPublicar}>
+              Publicar
+            </Text>
+          )}
         </TouchableOpacity>
 
       </View>
 
-      <TouchableOpacity
-        style={styles.areaMidia}
-        activeOpacity={0.8}
+      {/* =================================================
+          CONTEÚDO COM SCROLL
+      ================================================= */}
+
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={
+          Platform.OS === "ios"
+            ? "interactive"
+            : "on-drag"
+        }
       >
 
-        <Image
-          source={require("../../../assets/quadro.png")}
-          style={styles.iconeImagem}
-          resizeMode="contain"
-        />
+        {/* =================================================
+            FOTO / VÍDEO
+        ================================================= */}
 
-        <Text style={styles.textoMidia}>
-          Adicione uma foto ou vídeo
-        </Text>
+        <TouchableOpacity
+          style={styles.areaMidia}
+          activeOpacity={0.8}
+          onPress={handleSelecionarImagem}
+        >
 
-      </TouchableOpacity>
+          {imagem ? (
+            <>
+              <Image
+                source={{ uri: imagem }}
+                style={styles.imagemSelecionada}
+                resizeMode="cover"
+              />
 
-      <View style={styles.legendaContainer}>
+              <View
+                style={styles.botaoTrocarImagem}
+              >
+                <Text
+                  style={styles.textoTrocarImagem}
+                >
+                  Trocar foto
+                </Text>
+              </View>
+            </>
+          ) : (
+            <>
+              <Image
+                source={require(
+                  "../../../assets/quadro.png"
+                )}
+                style={styles.iconeImagem}
+                resizeMode="contain"
+              />
 
-        <TextInput
-          style={styles.inputLegenda}
-          placeholder="Escreva uma legenda..."
-          placeholderTextColor="#777777"
-          value={legenda}
-          onChangeText={setLegenda}
-          multiline
-          maxLength={220}
-          textAlignVertical="top"
-        />
+              <Text style={styles.textoMidia}>
+                Adicione uma foto ou vídeo
+              </Text>
 
-        <Text style={styles.contador}>
-          {legenda.length}/220
-        </Text>
+              <Text style={styles.textoGaleria}>
+                Toque para abrir a galeria
+              </Text>
+            </>
+          )}
 
-      </View>
+        </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.opcao}
-        activeOpacity={0.7}
-      >
+        {/* =================================================
+            LEGENDA
+        ================================================= */}
 
-        <Image
-          source={require("../../../assets/localizacao-2.png")}
-          style={styles.iconeOpcao}
-          resizeMode="contain"
-        />
+        <View
+          style={styles.legendaContainer}
+        >
 
-        <Text style={styles.textoOpcao}>
-          Adicionar localização
-        </Text>
+          <TextInput
+            style={styles.inputLegenda}
+            placeholder="Escreva uma legenda..."
+            placeholderTextColor="#777777"
+            value={legenda}
+            onChangeText={setLegenda}
+            multiline
+            maxLength={220}
+            textAlignVertical="top"
+          />
 
-        <View style={styles.chevron}>
-          <View style={styles.chevronLinha1} />
-          <View style={styles.chevronLinha2} />
+          <Text style={styles.contador}>
+            {legenda.length}/220
+          </Text>
+
         </View>
 
-      </TouchableOpacity>
+        {/* =================================================
+            LOCALIZAÇÃO
+        ================================================= */}
 
-      <TouchableOpacity
-        style={styles.opcao}
-        activeOpacity={0.7}
-      >
+        <TouchableOpacity
+          style={styles.opcao}
+          activeOpacity={0.7}
+          onPress={handleAdicionarLocalizacao}
+          disabled={carregando}
+        >
 
-        <Image
-          source={require("../../../assets/globo.png")}
-          style={styles.iconeOpcao}
-          resizeMode="contain"
-        />
+          <Image
+            source={require(
+              "../../../assets/localizacao-2.png"
+            )}
+            style={styles.iconeOpcao}
+            resizeMode="contain"
+          />
 
-        <Text style={styles.textoOpcao}>
-          Quem pode ver?
-        </Text>
+          <Text
+            style={[
+              styles.textoOpcao,
+              localizacao &&
+                styles.localizacaoSelecionada,
+            ]}
+            numberOfLines={1}
+          >
+            {localizacao
+              ? localizacao
+              : "Adicionar localização"}
+          </Text>
 
-        <Text style={styles.todos}>
-          Todos
-        </Text>
+          <View style={styles.chevron}>
 
-        <View style={styles.chevron}>
-          <View style={styles.chevronLinha1} />
-          <View style={styles.chevronLinha2} />
-        </View>
+            <View
+              style={styles.chevronLinha1}
+            />
 
-      </TouchableOpacity>
+            <View
+              style={styles.chevronLinha2}
+            />
 
-    </View>
+          </View>
+
+        </TouchableOpacity>
+
+        {/* =================================================
+            PRIVACIDADE
+        ================================================= */}
+
+        <TouchableOpacity
+          style={styles.opcao}
+          activeOpacity={0.7}
+        >
+
+          <Image
+            source={require(
+              "../../../assets/globo.png"
+            )}
+            style={styles.iconeOpcao}
+            resizeMode="contain"
+          />
+
+          <Text style={styles.textoOpcao}>
+            Quem pode ver?
+          </Text>
+
+          <Text style={styles.todos}>
+            Todos
+          </Text>
+
+          <View style={styles.chevron}>
+
+            <View
+              style={styles.chevronLinha1}
+            />
+
+            <View
+              style={styles.chevronLinha2}
+            />
+
+          </View>
+
+        </TouchableOpacity>
+
+        {/* Espaço no final para poder rolar melhor */}
+
+        <View style={{ height: 40 }} />
+
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

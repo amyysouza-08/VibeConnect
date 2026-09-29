@@ -1,19 +1,20 @@
 {
   "usuarios": [
     {
-      "id": 1,
-      "username": "eloysamarques",
-      "nome": "Eloysa Marques",
+      "id": "1",
+      "username": "eloysasoares",
+      "nome": "Eloysa Soares",
       "email": "eloysa@email.com",
       "senha": "123456",
-      "bio": "Compartilhando boas vibrações ✨",
+      "bio": "Compartilhando boas energias ✨",
       "localizacao": "Piauí, PI",
       "seguidores": 120,
       "seguindo": 85,
-      "publicacoes": 9
+      "publicacoes": 9,
+      "fotoPerfil": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/EC14B73E-D0C1-4597-96D6-7FCFAC8A2D6E.jpg"
     },
     {
-      "id": 2,
+      "id": "2",
       "username": "jamesribeiro",
       "nome": "James Ribeiro",
       "email": "james@email.com",
@@ -23,49 +24,202 @@
       "seguidores": 90,
       "seguindo": 70,
       "publicacoes": 5
+    },
+    {
+      "username": "amylinda",
+      "nome": "amy linda",
+      "email": "amy@linda",
+      "senha": "123456",
+      "bio": "amy maravilhosaa",
+      "localizacao": "",
+      "seguidores": 0,
+      "seguindo": 0,
+      "publicacoes": 0,
+      "id": "hybock1RDfs",
+      "fotoPerfil": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/EC14B73E-D0C1-4597-96D6-7FCFAC8A2D6E.jpg"
     }
   ],
   "publicacoes": [
     {
-      "id": 1,
-      "usuarioId": 1,
-      "username": "eloysamarques",
-      "localizacao": "Piauí, PI",
-      "imagem": "igreja.png",
-      "curtidas": 20,
-      "comentarios": 3,
-      "legenda": "Piauí é lindo! 😍",
-      "hashtags": "#VibeTop #Piauí #MinhaCidade"
+      "usuarioId": "hybock1RDfs",
+      "username": "amy",
+      "nome": "amy",
+      "localizacao": "",
+      "imagem": "file:///data/user/0/host.exp.exponent/cache/ExperienceData/%2540anonymous%252Fvibeconnect-03018f67-2397-457e-a38a-7415d6074503/ImagePicker/32326261-b5af-41a5-8a37-c137f1608266.jpeg",
+      "legenda": "uesinho fofinho",
+      "hashtags": "",
+      "criadoEm": "2026-09-29T17:15:49.948Z",
+      "curtidas": 1,
+      "curtido": true,
+      "comentarios": 1,
+      "comentariosLista": [
+        {
+          "id": "1790707266885",
+          "usuarioId": "1",
+          "username": "eloysasoares",
+          "texto": "fffnjk",
+          "criadoEm": "2026-09-29T18:41:06.885Z"
+        }
+      ],
+      "salvo": true,
+      "id": "DKrgIwwERl4"
+    },
+    {
+      "usuarioId": "1",
+      "username": "eloysasoares",
+      "nome": "Eloysa Soares",
+      "localizacao": "",
+      "imagem": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/FE3F9C3C-662F-4775-994E-5EE795F9F9E9.png",
+      "legenda": "Lanche",
+      "hashtags": "",
+      "criadoEm": "2026-09-29T18:56:09.007Z",
+      "curtidas": 1,
+      "curtido": true,
+      "comentarios": 0,
+      "comentariosLista": [],
+      "salvo": true,
+      "id": "obGPrQPD4c0"
+    },
+    {
+      "usuarioId": "1",
+      "username": "eloysasoares",
+      "nome": "Eloysa Soares",
+      "localizacao": "São Caetano do Sul, SP",
+      "imagem": "file:///var/mobile/Containers/Data/Application/07340CDB-B638-45CB-948D-F01C5C072631/Library/Caches/ImagePicker/6F9F9116-8C00-46A1-9FE0-B1C358A641F0.jpg",
+      "legenda": "Codando um pouco",
+      "hashtags": "",
+      "criadoEm": "2026-09-29T19:01:37.216Z",
+      "curtidas": 0,
+      "curtido": false,
+      "comentarios": 0,
+      "comentariosLista": [],
+      "salvo": false,
+      "id": "kwMah1vOE-g"
     }
   ],
   "notificacoes": [
     {
-      "id": 1,
+      "id": "1",
       "nome": "James Silva",
       "mensagem": "curtiu sua publicação.",
       "horario": "10:30",
       "tipo": "curtida"
     },
     {
-      "id": 2,
+      "id": "2",
       "nome": "Eloysa Marques",
       "mensagem": "curtiu sua publicação.",
       "horario": "10:30",
       "tipo": "curtida"
     },
     {
-      "id": 3,
+      "id": "3",
       "nome": "Eloysa Marques",
       "mensagem": "comentou sua publicação.",
       "horario": "09:45",
       "tipo": "comentario"
     },
     {
-      "id": 4,
+      "id": "4",
       "nome": "Amy Lee",
       "mensagem": "começou a seguir você.",
       "horario": "Ontem",
       "tipo": "seguidor"
+    },
+    {
+      "usuarioId": 1,
+      "nome": "Eloysa Marques",
+      "tipo": "comentario",
+      "mensagem": "comentou na sua publicação.",
+      "criadoEm": "2026-09-29T16:03:45.745Z",
+      "horario": "Agora",
+      "id": "h1aGEch1Qd0"
+    },
+    {
+      "destinatarioId": 1,
+      "usuarioId": 1,
+      "nome": "Eloysa Marques",
+      "tipo": "curtida",
+      "mensagem": "curtiu sua publicação.",
+      "criadoEm": "2026-09-29T16:12:26.489Z",
+      "lida": false,
+      "id": "0wcCrH-arg8"
+    },
+    {
+      "destinatarioId": 1,
+      "usuarioId": 1,
+      "nome": "Eloysa Marques",
+      "tipo": "comentario",
+      "mensagem": "comentou na sua publicação.",
+      "criadoEm": "2026-09-29T16:12:31.996Z",
+      "lida": false,
+      "id": "l2UbOSLf92Q"
+    },
+    {
+      "id": "xnz3ylIIw8c",
+      "destinatarioId": "hybock1RDfs",
+      "usuarioId": "hybock1RDfs",
+      "nome": "amy linda",
+      "username": "amylinda",
+      "tipo": "curtida",
+      "mensagem": "curtiu sua publicação.",
+      "postId": "DKrgIwwERl4",
+      "criadoEm": "2026-09-29T17:42:31.838Z",
+      "horario": "Agora",
+      "lida": false
+    },
+    {
+      "id": "i01YiWyXl_0",
+      "destinatarioId": "hybock1RDfs",
+      "usuarioId": "1",
+      "nome": "Eloysa Soares",
+      "username": "eloysasoares",
+      "tipo": "salvar",
+      "mensagem": "salvou sua publicação.",
+      "postId": "DKrgIwwERl4",
+      "criadoEm": "2026-09-29T17:42:37.628Z",
+      "horario": "Agora",
+      "lida": false
+    },
+    {
+      "id": "AkRcP3Wy4Us",
+      "destinatarioId": "hybock1RDfs",
+      "usuarioId": "1",
+      "nome": "Eloysa Soares",
+      "username": "eloysasoares",
+      "tipo": "comentario",
+      "mensagem": "comentou na sua publicação.",
+      "postId": "DKrgIwwERl4",
+      "criadoEm": "2026-09-29T18:41:06.911Z",
+      "horario": "Agora",
+      "lida": false
+    },
+    {
+      "id": "6ioja5KaKdM",
+      "destinatarioId": "1",
+      "usuarioId": "1",
+      "nome": "Eloysa Soares",
+      "username": "eloysasoares",
+      "tipo": "curtida",
+      "mensagem": "curtiu sua publicação.",
+      "postId": "obGPrQPD4c0",
+      "criadoEm": "2026-09-29T19:00:32.929Z",
+      "horario": "Agora",
+      "lida": false
+    },
+    {
+      "id": "Ksb5bNfCqx8",
+      "destinatarioId": "1",
+      "usuarioId": "1",
+      "nome": "Eloysa Soares",
+      "username": "eloysasoares",
+      "tipo": "salvar",
+      "mensagem": "salvou sua publicação.",
+      "postId": "obGPrQPD4c0",
+      "criadoEm": "2026-09-29T19:01:04.927Z",
+      "horario": "Agora",
+      "lida": false
     }
-  ]
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
 }

@@ -36,6 +36,7 @@ export default function Footer({
         </Text>
       </TouchableOpacity>
 
+
       {/* CRIAR */}
       <TouchableOpacity
         style={styles.botao}
@@ -54,6 +55,7 @@ export default function Footer({
           Criar
         </Text>
       </TouchableOpacity>
+
 
       {/* NOTIFICAÇÕES */}
       <TouchableOpacity
@@ -77,6 +79,7 @@ export default function Footer({
           Notificações
         </Text>
       </TouchableOpacity>
+
 
       {/* PERFIL */}
       <TouchableOpacity

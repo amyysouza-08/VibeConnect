@@ -13,96 +13,128 @@ export default function Info({
   usuario,
   navigation,
 }) {
-
   return (
-    <View style={styles.container}>
-
-      <View style={styles.topo}>
-
+    <View
+      style={styles.container}
+    >
+      <View
+        style={styles.topo}
+      >
         <Image
-          source={require("../../../assets/fotoPerfil.png")}
+          source={
+            usuario?.fotoPerfil
+              ? {
+                  uri: usuario.fotoPerfil,
+                }
+              : require(
+                  "../../../assets/fotoPerfil.png"
+                )
+          }
           style={styles.fotoPerfil}
         />
 
-        <View style={styles.estatisticas}>
-
-          <View style={styles.estatistica}>
-
-            <Text style={styles.numero}>
+        <View
+          style={styles.estatisticas}
+        >
+          <View
+            style={styles.estatistica}
+          >
+            <Text
+              style={styles.numero}
+            >
               {usuario?.publicacoes || 0}
             </Text>
 
-            <Text style={styles.label}>
+            <Text
+              style={styles.label}
+            >
               publicações
             </Text>
-
           </View>
 
-          <View style={styles.estatistica}>
-
-            <Text style={styles.numero}>
+          <View
+            style={styles.estatistica}
+          >
+            <Text
+              style={styles.numero}
+            >
               {usuario?.seguidores || 0}
             </Text>
 
-            <Text style={styles.label}>
+            <Text
+              style={styles.label}
+            >
               seguidores
             </Text>
-
           </View>
 
-          <View style={styles.estatistica}>
-
-            <Text style={styles.numero}>
+          <View
+            style={styles.estatistica}
+          >
+            <Text
+              style={styles.numero}
+            >
               {usuario?.seguindo || 0}
             </Text>
 
-            <Text style={styles.label}>
+            <Text
+              style={styles.label}
+            >
               seguindo
             </Text>
-
           </View>
-
         </View>
-
       </View>
 
-      <Text style={styles.nome}>
+      <Text
+        style={styles.nome}
+      >
         {usuario?.nome || ""}
       </Text>
 
-      <Text style={styles.bio}>
+      <Text
+        style={styles.bio}
+      >
         {usuario?.bio || ""}
       </Text>
 
-      <View style={styles.localizacaoContainer}>
-
+      <View
+        style={styles.localizacaoContainer}
+      >
         <Image
-          source={require("../../../assets/local-perfil.png")}
+          source={require(
+            "../../../assets/local-perfil.png"
+          )}
           style={styles.localizacaoIcone}
           resizeMode="contain"
         />
 
-        <Text style={styles.localizacao}>
-          {usuario?.localizacao || "Adicionar localização"}
+        <Text
+          style={styles.localizacao}
+        >
+          {usuario?.localizacao ||
+            "Adicionar localização"}
         </Text>
-
       </View>
 
       <TouchableOpacity
         style={styles.botao}
         onPress={() =>
-          navigation.navigate("EditarPerfil", {
-            usuario,
-          })
+          navigation.navigate(
+            "EditarPerfil",
+            {
+              usuario,
+            }
+          )
         }
+        activeOpacity={0.8}
       >
-
-        <Text style={styles.textoBotao}>
+        <Text
+          style={styles.textoBotao}
+        >
           Editar Perfil
         </Text>
-
       </TouchableOpacity>
-
     </View>
   );
 }

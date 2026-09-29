@@ -1,15 +1,12 @@
-
 import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
-
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 25,
+    paddingBottom: 30,
   },
-
-  // CABEÇALHO
 
   header: {
     height: 90,
@@ -39,10 +36,8 @@ const styles = StyleSheet.create({
   },
 
   espaco: {
-    width: 30,
+    width: 40,
   },
-
-  // FOTO
 
   fotoContainer: {
     height: 170,
@@ -55,7 +50,7 @@ const styles = StyleSheet.create({
   foto: {
     width: 140,
     height: 140,
-    borderRadius: 73,
+    borderRadius: 70,
     resizeMode: "cover",
   },
 
@@ -76,8 +71,6 @@ const styles = StyleSheet.create({
     height: 23,
     resizeMode: "contain",
   },
-
-  // CAMPOS
 
   campo: {
     marginBottom: 10,
@@ -117,8 +110,6 @@ const styles = StyleSheet.create({
     color: "#575757",
   },
 
-  // BOTÃO
-
   botaoSalvar: {
     width: "100%",
     height: 48,
@@ -134,7 +125,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#350616",
   },
-
 });
 
 export default styles;

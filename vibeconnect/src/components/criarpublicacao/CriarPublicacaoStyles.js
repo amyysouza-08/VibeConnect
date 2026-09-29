@@ -6,9 +6,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 20,
     paddingTop: 0,
+    paddingTop: 50
   },
 
+  // =====================================================
   // HEADER
+  // =====================================================
+
   header: {
     width: "100%",
     height: 72,
@@ -51,13 +55,20 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
 
+  botaoPublicarDesativado: {
+    opacity: 0.6,
+  },
+
   textoPublicar: {
     fontFamily: "Poppins_400Regular",
     fontSize: 11,
     color: "#555555",
   },
 
+  // =====================================================
   // FOTO / VÍDEO
+  // =====================================================
+
   areaMidia: {
     width: "100%",
     height: 243,
@@ -67,6 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E4F5FC",
     justifyContent: "center",
     alignItems: "center",
+    overflow: "hidden",
   },
 
   iconeImagem: {
@@ -82,7 +94,42 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 
+  textoGaleria: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 11,
+    color: "#548A98",
+    marginTop: 6,
+  },
+
+  // =====================================================
+  // IMAGEM SELECIONADA
+  // =====================================================
+
+  imagemSelecionada: {
+    width: "100%",
+    height: "100%",
+  },
+
+  botaoTrocarImagem: {
+    position: "absolute",
+    bottom: 12,
+    alignSelf: "center",
+    paddingHorizontal: 18,
+    paddingVertical: 7,
+    borderRadius: 18,
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+  },
+
+  textoTrocarImagem: {
+    fontFamily: "Poppins_400Regular",
+    fontSize: 12,
+    color: "#430019",
+  },
+
+  // =====================================================
   // LEGENDA
+  // =====================================================
+
   legendaContainer: {
     width: "100%",
     height: 120,
@@ -112,7 +159,10 @@ const styles = StyleSheet.create({
     color: "#777777",
   },
 
+  // =====================================================
   // OPÇÕES
+  // =====================================================
+
   opcao: {
     width: "100%",
     height: 59,
@@ -138,6 +188,10 @@ const styles = StyleSheet.create({
     color: "#777777",
   },
 
+  localizacaoSelecionada: {
+    color: "#430019",
+  },
+
   todos: {
     fontFamily: "Poppins_400Regular",
     fontSize: 14,
@@ -145,7 +199,10 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
 
+  // =====================================================
   // SETA DIREITA
+  // =====================================================
+
   chevron: {
     width: 11,
     height: 20,

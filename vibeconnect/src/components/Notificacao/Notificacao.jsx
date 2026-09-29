@@ -1,5 +1,5 @@
 import React, {
-  useEffect,
+  useCallback,
   useState,
 } from "react";
 
@@ -17,6 +17,10 @@ import {
   SafeAreaView,
 } from "react-native-safe-area-context";
 
+import {
+  useFocusEffect,
+} from "@react-navigation/native";
+
 import styles from "./NotificacaoStyle";
 
 import Footer from "../footer/Footer";
@@ -25,59 +29,125 @@ import {
   getNotificacoes,
 } from "../../api/api";
 
+// =====================================================
+// ÍCONES DAS NOTIFICAÇÕES
+// =====================================================
+
 const icones = {
-  curtida: require("../../../assets/curtida-preenchida.png"),
-  comentario: require("../../../assets/comentario-not.png"),
-  seguidor: require("../../../assets/follow.png"),
-  padrao: require("../../../assets/notificacao.png"),
+  curtida: require(
+    "../../../assets/curtida-preenchida.png"
+  ),
+
+  comentario: require(
+    "../../../assets/comentario-not.png"
+  ),
+
+  seguidor: require(
+    "../../../assets/follow.png"
+  ),
+
+  salvo: require(
+    "../../../assets/salvar-preenchido.png"
+  ),
+
+  padrao: require(
+    "../../../assets/notificacao.png"
+  ),
 };
 
+// =====================================================
+// ESCOLHER ÍCONE PELO TIPO
+// =====================================================
+
 function iconePorTipo(tipo) {
-  return icones[tipo] || icones.padrao;
+  return (
+    icones[tipo] ||
+    icones.padrao
+  );
 }
+
+// =====================================================
+// TELA DE NOTIFICAÇÕES
+// =====================================================
 
 export default function Notificacao({
   navigation,
 }) {
+  const [
+    notificacoes,
+    setNotificacoes,
+  ] = useState([]);
 
-  const [notificacoes, setNotificacoes] =
-    useState([]);
+  const [
+    carregando,
+    setCarregando,
+  ] = useState(true);
 
-  const [carregando, setCarregando] =
-    useState(true);
+  // ===================================================
+  // CARREGAR NOTIFICAÇÕES
+  // ===================================================
 
-  useEffect(() => {
-    carregarNotificacoes();
-  }, []);
+  const carregarNotificacoes =
+    useCallback(async () => {
+      try {
+        setCarregando(true);
 
-  const carregarNotificacoes = async () => {
+        console.log(
+          "CARREGANDO NOTIFICAÇÕES..."
+        );
 
-    try {
+        const dados =
+          await getNotificacoes();
 
-      setCarregando(true);
+        console.log(
+          "NOTIFICAÇÕES RECEBIDAS:",
+          dados
+        );
 
-      const dados =
-        await getNotificacoes();
+        if (Array.isArray(dados)) {
+          setNotificacoes(dados);
+        } else {
+          setNotificacoes([]);
+        }
+      } catch (error) {
+        console.log(
+          "ERRO AO CARREGAR NOTIFICAÇÕES:",
+          error
+        );
 
-      setNotificacoes(dados);
+        Alert.alert(
+          "Erro",
+          error?.message ||
+            "Não foi possível carregar as notificações."
+        );
+      } finally {
+        setCarregando(false);
+      }
+    }, []);
 
-    } catch (error) {
+  // ===================================================
+  // RECARREGAR TODA VEZ QUE ENTRAR NA TELA
+  // ===================================================
 
-      Alert.alert(
-        "Erro",
-        error.message
-      );
+  useFocusEffect(
+    useCallback(() => {
+      carregarNotificacoes();
+    }, [carregarNotificacoes])
+  );
 
-    } finally {
-      setCarregando(false);
-    }
-  };
+  // ===================================================
+  // TELA
+  // ===================================================
 
   return (
     <SafeAreaView
       style={styles.container}
       edges={["top"]}
     >
+
+      {/* =================================================
+          HEADER
+      ================================================= */}
 
       <View style={styles.header}>
 
@@ -87,7 +157,15 @@ export default function Notificacao({
 
       </View>
 
+      {/* =================================================
+          CONTEÚDO
+      ================================================= */}
+
       {carregando ? (
+
+        // =================================================
+        // CARREGANDO
+        // =================================================
 
         <View
           style={{
@@ -97,81 +175,154 @@ export default function Notificacao({
           }}
         >
 
-          <ActivityIndicator />
+          <ActivityIndicator
+            size="large"
+          />
 
         </View>
 
       ) : (
 
+        // =================================================
+        // LISTA
+        // =================================================
+
         <ScrollView
           style={styles.lista}
-          contentContainerStyle={
-            styles.listaConteudo
-          }
+          contentContainerStyle={[
+            styles.listaConteudo,
+            notificacoes.length === 0 && {
+              flexGrow: 1,
+            },
+          ]}
           showsVerticalScrollIndicator={false}
         >
 
-          {notificacoes.map(
-            (notificacao) => (
+          {/* =================================================
+              NENHUMA NOTIFICAÇÃO
+          ================================================= */}
 
-              <TouchableOpacity
-                key={notificacao.id}
-                style={styles.card}
-                activeOpacity={0.8}
+          {notificacoes.length === 0 ? (
+
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingHorizontal: 30,
+              }}
+            >
+
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#777777",
+                  textAlign: "center",
+                }}
               >
+                Nenhuma notificação ainda.
+              </Text>
 
-                <View
-                  style={
-                    styles.iconeContainer
-                  }
+            </View>
+
+          ) : (
+
+            // =================================================
+            // NOTIFICAÇÕES
+            // =================================================
+
+            notificacoes.map(
+              (notificacao) => (
+
+                <TouchableOpacity
+                  key={String(
+                    notificacao.id
+                  )}
+                  style={styles.card}
+                  activeOpacity={0.8}
                 >
 
-                  <Image
-                    source={iconePorTipo(
-                      notificacao.tipo
-                    )}
+                  {/* =================================================
+                      ÍCONE
+                  ================================================= */}
+
+                  <View
                     style={
-                      styles.iconeImagem
+                      styles.iconeContainer
                     }
-                  />
+                  >
 
-                </View>
+                    <Image
+                      source={iconePorTipo(
+                        notificacao.tipo
+                      )}
+                      style={
+                        styles.iconeImagem
+                      }
+                      resizeMode="contain"
+                    />
 
-                <View
-                  style={styles.conteudo}
-                >
+                  </View>
 
-                  <Text
-                    style={styles.mensagem}
+                  {/* =================================================
+                      TEXTO
+                  ================================================= */}
+
+                  <View
+                    style={styles.conteudo}
                   >
 
                     <Text
-                      style={styles.nome}
+                      style={
+                        styles.mensagem
+                      }
                     >
-                      {notificacao.nome}
+
+                      <Text
+                        style={
+                          styles.nome
+                        }
+                      >
+                        {notificacao.nome ||
+                          "Usuário"}
+                      </Text>
+
+                      {" "}
+
+                      {notificacao.mensagem ||
+                        ""}
+
                     </Text>
 
-                    {" "}
-                    {notificacao.mensagem}
+                    {/* =================================================
+                        HORÁRIO
+                    ================================================= */}
 
-                  </Text>
+                    <Text
+                      style={
+                        styles.horario
+                      }
+                    >
+                      {notificacao.horario ||
+                        "Agora"}
+                    </Text>
 
-                  <Text
-                    style={styles.horario}
-                  >
-                    {notificacao.horario}
-                  </Text>
+                  </View>
 
-                </View>
+                </TouchableOpacity>
 
-              </TouchableOpacity>
-
+              )
             )
+
           )}
 
         </ScrollView>
 
       )}
+
+      {/* =================================================
+          FOOTER
+      ================================================= */}
 
       <Footer
         telaAtiva="notificacao"
